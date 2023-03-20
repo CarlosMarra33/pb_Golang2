@@ -6,6 +6,19 @@ import (
 	"time"
 )
 
+func GetPresencaAula(idAula uint, idAluno uint) []models.Presenca {
+	db := database.GetDatabase()
+	var p []models.Presenca
+
+	err := db.Where("AlunoId = ?", idAluno).Where("AulaId = ?", idAula).Find(&p)
+
+	if err != nil {
+		return nil
+	}
+
+	return p
+}
+
 func ChecaPresenca(idAula uint, idAluno uint) bool {
 	db := database.GetDatabase()
 	var p []models.Presenca
