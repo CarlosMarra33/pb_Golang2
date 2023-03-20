@@ -20,7 +20,8 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 		{
 			present.POST("/presente", controllers.MarcarPresença)
 			present.POST("/falta", controllers.MarcarFalta)
-			present.PUT("atualza", controllers.AtualizarPresenca)
+			present.PUT("/atualza", controllers.AtualizarPresenca)
+			present.GET("/getPresenca/:idAluno/:idAula", controllers.GetPresencaByAluno)
 		}
 	}
 	return router
