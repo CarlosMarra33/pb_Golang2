@@ -3,6 +3,7 @@ package controllers
 import (
 	"application/controllers/dtos"
 	"application/services"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,7 +54,7 @@ func MarcarFalta(c *gin.Context) {
 	c.Status(204)
 }
 
-func AtualizarPresenca(c *gin.Context){
+func AtualizarPresenca(c *gin.Context) {
 	var presenca dtos.PresencaDto
 
 	err := c.ShouldBindJSON(presenca)
@@ -74,6 +75,19 @@ func AtualizarPresenca(c *gin.Context){
 		return
 	}
 
-
 	c.Status(200)
+}
+
+func GetPresencaByAluno(c *gin.Context) {
+	idAluno, _ := strconv.ParseInt(c.Param("idAluno"), 10, 64)
+	idAula, _ := strconv.ParseInt(c.Param("idAula"), 10, 64)
+
+	presnsas := services.GetPresencaAula(uint(idAula), uint(idAluno))
+	if presnsas == nil {
+		c.JSON(500, gin.H{
+			"error": "não foi possível buscar presenças ",
+		})
+	}
+
+	c.JSON(200, presnsas)
 }
