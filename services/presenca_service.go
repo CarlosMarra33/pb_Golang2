@@ -68,3 +68,12 @@ func UpdatePresenca(idPresenca uint, tipo string) error{
 
 	return nil
 }
+
+
+func GetPresencaAula(idAula uint, idAluno uint) []models.Presenca{
+	var presenca []models.Presenca
+
+	presenca = repositorio.GetPresencaAula(idAula, idAluno)
+
+	return presenca
+}
