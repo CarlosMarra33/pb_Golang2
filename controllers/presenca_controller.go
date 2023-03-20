@@ -30,6 +30,29 @@ func MarcarPresença(c *gin.Context) {
 	c.Status(204)
 }
 
+func MarcarFalta(c *gin.Context) {
+	var request dtos.PresencaDto
+
+	err := c.ShouldBindJSON(&request)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "cannot bind JSON: " + err.Error(),
+		})
+		return
+	}
+
+	err = services.MarcarFalta(request.IdAula, request.IdAluno)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "não foi possível marcar presença " + err.Error(),
+		})
+		return
+	}
+
+	c.Status(204)
+}
+
 func AtualizarPresenca(c *gin.Context){
 	var presenca dtos.PresencaDto
 
