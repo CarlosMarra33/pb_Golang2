@@ -11,14 +11,15 @@ import (
 func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	main := router.Group("/api")
 	{
-		aula := main.Group("aula")
+		aula := main.Group("/aula")
 		{
 			aula.POST("/criar", controllers.CreateAula)
+			aula.POST("/presente", controllers.MarcarPresença)
 		}
 
 		present := main.Group("presenca")
 		{
-			present.POST("/presente", controllers.MarcarPresença)
+			// present.
 			present.POST("/falta", controllers.MarcarFalta)
 			present.PUT("/atualza", controllers.AtualizarPresenca)
 			present.GET("/getPresenca/:idAluno/:idAula", controllers.GetPresencaByAluno)

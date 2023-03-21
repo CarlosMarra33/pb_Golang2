@@ -3,19 +3,20 @@ package repositorio
 import (
 	"application/database"
 	"application/models"
+	"fmt"
 	"time"
 )
 
-func GetPresencaAula(idAula uint, idAluno uint) []models.Presenca {
+func GetPresencaAula(idAula *uint, idAluno *uint) []models.Presenca {
 	db := database.GetDatabase()
 	var p []models.Presenca
 
-	err := db.Where("AlunoId = ?", idAluno).Where("AulaId = ?", idAula).Find(&p)
-
+	err := db.Where("aluno_id = ?", &idAluno).Where("aula_id = ?", &idAula).Find(&p).Error
+	fmt.Println("erro do banco de dados      : ",err.Error)
 	if err != nil {
 		return nil
 	}
-
+	fmt.Println(p, "        present")
 	return p
 }
 
@@ -28,7 +29,7 @@ func ChecaPresenca(idAula uint, idAluno uint) bool {
 	}
 
 	for _, p := range p {
-		if p.DataCreate.Day() == time.Now().Day() {
+		if p.DataCreate == time.Now().Day() {
 			return false
 		}
 	}
@@ -36,14 +37,17 @@ func ChecaPresenca(idAula uint, idAluno uint) bool {
 	return true
 }
 
-func MarcarPresenca(presenca models.Presenca) error {
+func MarcarPresenca(presenca *models.Presenca) {
 	db := database.GetDatabase()
+
+	fmt.Println("teste banco")
+
+	fmt.Println(presenca)
 
 	err := db.Create(presenca).Error
 	if err != nil {
-		return err
+		return
 	}
-	return nil
 
 }
 
@@ -56,7 +60,7 @@ func AtualizarPresenca(tipo string, presencaOldId uint) error {
 		return err
 	}
 	presenca.Tipo = tipo
-	presenca.DataUpdate = time.Now()
+	presenca.DataUpdate = time.Now().Day()
 	err = db.Save(&presenca).Error
 	if err != nil {
 		return err

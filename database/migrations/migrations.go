@@ -1,4 +1,5 @@
 package migrations
+
 import (
 	"application/models"
 
