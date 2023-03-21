@@ -12,7 +12,7 @@ func GetPresencaAula(idAula *uint, idAluno *uint) []models.Presenca {
 	var p []models.Presenca
 
 	err := db.Where("aluno_id = ?", &idAluno).Where("aula_id = ?", &idAula).Find(&p).Error
-	fmt.Println("erro do banco de dados      : ",err.Error)
+	// fmt.Println("erro do banco de dados      : ", err.Error)
 	if err != nil {
 		return nil
 	}
