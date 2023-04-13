@@ -10,7 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MarcarPresença(c *gin.Context) {
+type PresencardController struct {
+	presencaService services.PresencaService
+}
+
+func NewPresencardController(presencaService services.PresencaService) * PresencardController{
+	return &PresencardController{presencaService: presencaService,}
+}
+
+func (prs *PresencardController) MarcarPresença(c *gin.Context) {
 	var request dtos.PresencaDto
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
@@ -19,7 +27,7 @@ func MarcarPresença(c *gin.Context) {
 		})
 		return
 	}
-	resposta := services.MarcarPresenca(uint(request.IdAula), uint(request.IdAluno))
+	resposta := prs.presencaService.MarcarPresenca(uint(request.IdAula), uint(request.IdAluno))
 	if resposta != "" {
 		c.JSON(http.StatusFound, gin.H{
 			"msg": "resposta ",
@@ -29,7 +37,7 @@ func MarcarPresença(c *gin.Context) {
 	c.Status(200)
 }
 
-func MarcarFalta(c *gin.Context) {
+func (prs *PresencardController) MarcarFalta(c *gin.Context) {
 	var request dtos.PresencaDto
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
@@ -38,6 +46,7 @@ func MarcarFalta(c *gin.Context) {
 		})
 		return
 	}
+	err = prs.presencaService.MarcarFalta(uint(request.IdAula), uint(request.IdAluno))
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "não foi possível marcar presença " + err.Error(),
@@ -47,7 +56,7 @@ func MarcarFalta(c *gin.Context) {
 	c.Status(204)
 }
 
-func AtualizarPresenca(c *gin.Context) {
+func (prs *PresencardController) AtualizarPresenca(c *gin.Context) {
 	var presenca dtos.PresencaDto
 
 	err := c.ShouldBindJSON(&presenca)
@@ -57,7 +66,7 @@ func AtualizarPresenca(c *gin.Context) {
 		})
 		return
 	}
-	err = services.UpdatePresenca(uint(presenca.IdAluno), presenca.Tipo)
+	err = prs.presencaService.UpdatePresenca(uint(presenca.IdAluno), presenca.Tipo)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "não foi atualizar presença " + err.Error(),
@@ -69,10 +78,10 @@ func AtualizarPresenca(c *gin.Context) {
 	c.Status(200)
 }
 
-func GetPresencaByAluno(c *gin.Context) {
+func (prs *PresencardController) GetPresencaByAluno(c *gin.Context) {
 	idAluno, _ := strconv.ParseInt(c.Param("idAluno"), 10, 64)
 	idAula, _ := strconv.ParseInt(c.Param("idAula"), 10, 64)
-	presenca := services.GetPresencaAula(uint(idAula), uint(idAluno))
+	presenca := prs.presencaService.GetPresencaAula(uint(idAula), uint(idAluno))
 	fmt.Println(presenca)
 	c.JSON(200, presenca)
 }

@@ -7,7 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateAula(c *gin.Context) {
+type AulaController struct {
+	aulaService services.AulaService
+}
+
+func NewAulaController(service services.AulaService) *AulaController {
+	return &AulaController{
+		aulaService: service,
+	}
+}
+
+func (ac *AulaController) CreateAula(c *gin.Context) {
 	var request dtos.ProfessoAulaDto
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
@@ -16,7 +26,7 @@ func CreateAula(c *gin.Context) {
 		})
 		return
 	}
-	resp, err := services.CreateNewAula(request.ProfessorID, request.Materia, request.Alunos)
+	resp, err := ac.aulaService.CreateNewAula(request.ProfessorID, request.Materia, request.Alunos)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "não foi possivel criar: " + err.Error(),

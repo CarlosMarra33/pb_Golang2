@@ -5,7 +5,15 @@ import (
 	"application/repositorio"
 )
 
-func CreateNewAula(profID uint, materia string, alunos []uint) (string, error) {
+type AulaService struct {
+	repo repositorio.AulaRepository
+}
+
+func NewAulaService(aulaRepo repositorio.AulaRepository) *AulaService {
+	return &AulaService{repo : aulaRepo,}
+}
+
+func (ar *AulaService) CreateNewAula(profID uint, materia string, alunos []uint) (string, error) {
 	var newAula models.Aula
 	valoresInt := make([]int64, len(alunos))
 
@@ -19,7 +27,7 @@ func CreateNewAula(profID uint, materia string, alunos []uint) (string, error) {
 	newAula.Materia = materia
 	newAula.ProfessorID = profID
 
-	resp, err := repositorio.Create(newAula)
+	resp, err := ar.repo.Create(newAula)
 
 	return resp, err
 }

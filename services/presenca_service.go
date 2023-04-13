@@ -7,58 +7,69 @@ import (
 	"time"
 )
 
-func MarcarPresenca(idAula uint, idaluno uint) string  {
+type PresencaService struct {
+	repo repositorio.PresencaRepository
+}
 
-	var p models.Presenca
-	p.AlunoId = idaluno
-	p.AulaId = idAula
-	p.Tipo = "presente"
-	p.DataCreate = time.Now()
+func NewPresencaService(repo repositorio.PresencaRepository) *PresencaService{
+	return &PresencaService{
+		repo : repo,
+	}
+}
+
+func (p *PresencaService)MarcarPresenca(idAula uint, idaluno uint) string  {
+
+	var presenca models.Presenca
+	presenca.AlunoId = idaluno
+	presenca.AulaId = idAula
+	presenca.Tipo = "presente"
+	presenca.DataCreate = time.Now()
 
 	fmt.Println("teste service")
 
-	if !repositorio.ChecaPresenca(&p.AulaId, &p.AlunoId) {
+	if !p.repo.ChecaPresenca(&presenca.AulaId, &presenca.AlunoId) {
 		return "Presensa de hoje já foi marcada"
 	}
-	repositorio.MarcarPresenca(&p)
+	p.repo.MarcarPresenca(&presenca)
 	return ""
 }
 
-func MarcarFalta(idAula uint, idaluno uint) error {
+func (p *PresencaService)MarcarFalta(idAula uint, idaluno uint) error {
 
-	p := models.Presenca{
+	presenca := models.Presenca{
 		AlunoId:    idaluno,
 		AulaId:     idAula,
 		Tipo:       "falta",
 		DataCreate: time.Now(),
 	}
 
-	if !repositorio.ChecaPresenca(&p.AulaId, &p.AlunoId) {
+	if !p.repo.ChecaPresenca(&presenca.AulaId, &presenca.AlunoId) {
 		return nil
 	}
-	repositorio.MarcarPresenca(&p)
+	p.repo.MarcarPresenca(&presenca)
 	return nil
 }
 
-func MarcarAbono(idAula uint, idaluno uint) error {
+func (p *PresencaService) MarcarAbono(idAula uint, idaluno uint) error {
 
-	p := models.Presenca{
+	presenca := models.Presenca{
 		AlunoId:    idaluno,
 		AulaId:     idAula,
 		Tipo:       "abono",
 		DataCreate: time.Now(),
 	}
-
-	if !repositorio.ChecaPresenca(&p.AulaId, &p.AlunoId) {
+	
+	 
+	if !p.repo.ChecaPresenca(&presenca.AulaId, &presenca.AlunoId) {
 		return nil
 	}
-	repositorio.MarcarPresenca(&p)
+	p.repo.MarcarPresenca(&presenca)
 
 	return nil
 }
 
-func UpdatePresenca(idPresenca uint, tipo string) error {
-	err := repositorio.AtualizarPresenca(tipo, idPresenca)
+func (p *PresencaService) UpdatePresenca(idPresenca uint, tipo string) error {
+	err := p.repo.AtualizarPresenca(tipo, idPresenca)
 	
 	if err != nil {
 		return err
@@ -67,8 +78,8 @@ func UpdatePresenca(idPresenca uint, tipo string) error {
 	return nil
 }
 
-func GetPresencaAula(idAula uint, idAluno uint) []models.Presenca {
-	presenca := repositorio.GetPresencaAula(&idAula, &idAluno)
+func (p *PresencaService) GetPresencaAula(idAula uint, idAluno uint) []models.Presenca {
+	presenca := p.repo.GetPresencaAula(&idAula, &idAluno)
 
 	return presenca
 }

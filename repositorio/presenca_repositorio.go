@@ -7,7 +7,11 @@ import (
 	"time"
 )
 
-func GetPresencaAula(idAula *uint, idAluno *uint) []models.Presenca {
+type PresencaRepository struct {}
+
+
+
+func (pr *PresencaRepository) GetPresencaAula(idAula *uint, idAluno *uint) []models.Presenca {
 	db := database.GetDatabase()
 	var p []models.Presenca
 	pre := models.Presenca{
@@ -22,7 +26,7 @@ func GetPresencaAula(idAula *uint, idAluno *uint) []models.Presenca {
 	return p
 }
 
-func ChecaPresenca(idAula *uint, idAluno *uint) bool {
+func (pr *PresencaRepository) ChecaPresenca(idAula *uint, idAluno *uint) bool {
 	db := database.GetDatabase()
 	var p []models.Presenca
 	err := db.Where("aluno_id = ?", &idAluno).Where("aula_id = ?", &idAula).Find(&p).Error
@@ -38,7 +42,7 @@ func ChecaPresenca(idAula *uint, idAluno *uint) bool {
 	return true
 }
 
-func MarcarPresenca(presenca *models.Presenca) {
+func (pr *PresencaRepository) MarcarPresenca(presenca *models.Presenca) {
 	db := database.GetDatabase()
 	fmt.Println("teste banco")
 	fmt.Println(presenca)
@@ -48,7 +52,7 @@ func MarcarPresenca(presenca *models.Presenca) {
 	}
 }
 
-func AtualizarPresenca(tipo string, presencaOldId uint) error {
+func (pr *PresencaRepository) AtualizarPresenca(tipo string, presencaOldId uint) error {
 	db := database.GetDatabase()
 	var presenca models.Presenca
 	err := db.First(&presenca, presencaOldId).Error

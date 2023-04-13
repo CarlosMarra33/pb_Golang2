@@ -5,7 +5,9 @@ import (
 	"application/models"
 )
 
-func Create(aula models.Aula) (string, error) {
+type AulaRepository struct {}
+
+func (aularepo *AulaRepository) Create(aula models.Aula) (string, error) {
 	db := database.GetDatabase()
 	err := db.Create(&aula).Error
 	return "", err
