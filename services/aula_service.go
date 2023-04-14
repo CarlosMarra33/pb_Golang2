@@ -10,10 +10,10 @@ type AulaService struct {
 }
 
 func NewAulaService(aulaRepo repositorio.AulaRepository) *AulaService {
-	return &AulaService{repo : aulaRepo,}
+	return &AulaService{repo: aulaRepo}
 }
 
-func (ar *AulaService) CreateNewAula(profID uint, materia string, alunos []uint) (string, error) {
+func (as *AulaService) CreateNewAula(profID uint, materia string, alunos []uint) (string, error) {
 	var newAula models.Aula
 	valoresInt := make([]int64, len(alunos))
 
@@ -21,13 +21,11 @@ func (ar *AulaService) CreateNewAula(profID uint, materia string, alunos []uint)
 		valoresInt[i] = int64(v)
 	}
 
-
-
 	newAula.AlunosID = valoresInt
 	newAula.Materia = materia
 	newAula.ProfessorID = profID
 
-	resp, err := ar.repo.Create(newAula)
+	resp, err := as.repo.Create(newAula)
 
 	return resp, err
 }

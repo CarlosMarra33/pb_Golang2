@@ -10,18 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
-
 func ConfigRoutes(router *gin.Engine) *gin.Engine {
 
-	presencaController := controllers.NewPresencardController(*services.NewPresencaService(*&repositorio.PresencaRepository{}))
-	aulaController := controllers.NewAulaController(*services.NewAulaService(repositorio.AulaRepository{}))
+	presencaController := controllers.NewPresencaController(*services.NewPresencaService(*repositorio.NewPresencaRepository()))
+	aulaController := controllers.NewAulaController(*services.NewAulaService(*repositorio.NewAulaRepository()))
 	main := router.Group("/api")
 	{
 		aula := main.Group("/aula")
 		{
 			aula.POST("/criar", aulaController.CreateAula)
-			
+
 		}
 
 		present := main.Group("presenca")

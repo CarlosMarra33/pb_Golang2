@@ -3,12 +3,21 @@ package repositorio
 import (
 	"application/database"
 	"application/models"
+
+	"gorm.io/gorm"
 )
 
-type AulaRepository struct {}
+type AulaRepository struct {
+	db *gorm.DB
+}
 
-func (aularepo *AulaRepository) Create(aula models.Aula) (string, error) {
-	db := database.GetDatabase()
-	err := db.Create(&aula).Error
+func NewAulaRepository() *AulaRepository {
+	return &AulaRepository{
+		db: database.GetDatabase(),
+	}
+}
+
+func (ar *AulaRepository) Create(aula models.Aula) (string, error) {
+	err := ar.db.Create(&aula).Error
 	return "", err
 }

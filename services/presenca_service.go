@@ -11,13 +11,13 @@ type PresencaService struct {
 	repo repositorio.PresencaRepository
 }
 
-func NewPresencaService(repo repositorio.PresencaRepository) *PresencaService{
+func NewPresencaService(repo repositorio.PresencaRepository) *PresencaService {
 	return &PresencaService{
-		repo : repo,
+		repo: repo,
 	}
 }
 
-func (p *PresencaService)MarcarPresenca(idAula uint, idaluno uint) string  {
+func (p *PresencaService) MarcarPresenca(idAula uint, idaluno uint) string {
 
 	var presenca models.Presenca
 	presenca.AlunoId = idaluno
@@ -34,7 +34,7 @@ func (p *PresencaService)MarcarPresenca(idAula uint, idaluno uint) string  {
 	return ""
 }
 
-func (p *PresencaService)MarcarFalta(idAula uint, idaluno uint) error {
+func (p *PresencaService) MarcarFalta(idAula uint, idaluno uint) error {
 
 	presenca := models.Presenca{
 		AlunoId:    idaluno,
@@ -58,8 +58,7 @@ func (p *PresencaService) MarcarAbono(idAula uint, idaluno uint) error {
 		Tipo:       "abono",
 		DataCreate: time.Now(),
 	}
-	
-	 
+
 	if !p.repo.ChecaPresenca(&presenca.AulaId, &presenca.AlunoId) {
 		return nil
 	}
@@ -70,7 +69,7 @@ func (p *PresencaService) MarcarAbono(idAula uint, idaluno uint) error {
 
 func (p *PresencaService) UpdatePresenca(idPresenca uint, tipo string) error {
 	err := p.repo.AtualizarPresenca(tipo, idPresenca)
-	
+
 	if err != nil {
 		return err
 	}

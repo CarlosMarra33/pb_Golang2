@@ -14,8 +14,8 @@ type PresencardController struct {
 	presencaService services.PresencaService
 }
 
-func NewPresencardController(presencaService services.PresencaService) * PresencardController{
-	return &PresencardController{presencaService: presencaService,}
+func NewPresencaController(presencaService services.PresencaService) *PresencardController {
+	return &PresencardController{presencaService: presencaService}
 }
 
 func (prs *PresencardController) MarcarPresença(c *gin.Context) {
@@ -70,9 +70,8 @@ func (prs *PresencardController) AtualizarPresenca(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "não foi atualizar presença " + err.Error(),
-			
 		})
-		fmt.Println("não foi possivel criar: " , err.Error())
+		fmt.Println("não foi possivel criar: ", err.Error())
 		return
 	}
 	c.Status(200)
