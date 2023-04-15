@@ -35,6 +35,21 @@ func (pr *PresencaRepository) GetPresencaAula(idAula *uint, idAluno *uint) []mod
 
 func (pr *PresencaRepository) ChecaPresenca(idAula *uint, idAluno *uint) bool {
 	var p []models.Presenca
+	isValid := NewAulaRepository().ValidarAula(*idAula)
+	if !isValid {
+		return false
+	}
+	var aula models.Aula
+	dberr := pr.db.Where("aula_id = ?", idAula).First(&aula).Error
+	if dberr == gorm.ErrRecordNotFound {
+		return false
+	}
+
+	check := pr.validarLista(*idAula, aula)
+	if !check {
+		return false
+	}
+
 	err := pr.db.Where("aluno_id = ?", &idAluno).Where("aula_id = ?", &idAula).Find(&p).Error
 	if err != nil {
 		return false
@@ -48,6 +63,19 @@ func (pr *PresencaRepository) ChecaPresenca(idAula *uint, idAluno *uint) bool {
 	return true
 }
 
+func (pr *PresencaRepository) validarLista(id uint, aula models.Aula) bool {
+
+	isValid := false
+
+	for _, p := range aula.AlunosID {
+		if p == int64(id) {
+			isValid = true
+		}
+	}
+
+	return isValid
+}
+
 func (pr *PresencaRepository) MarcarPresenca(presenca *models.Presenca) {
 	fmt.Println("teste banco")
 	fmt.Println(presenca)
@@ -59,9 +87,12 @@ func (pr *PresencaRepository) MarcarPresenca(presenca *models.Presenca) {
 
 func (pr *PresencaRepository) AtualizarPresenca(tipo string, presencaOldId uint) error {
 	var presenca models.Presenca
-	err := pr.db.First(&presenca, presencaOldId).Error
-	if err != nil {
+	err := pr.db.Where("presenca_id = ?", presencaOldId).First(&presenca).Error
+	fmt.Println("teste id que vem   ",presencaOldId)
+	if err != nil{
 		return err
+	}else if err == gorm.ErrRecordNotFound{
+		return nil
 	}
 	presenca.Tipo = tipo
 	presenca.DataUpdate = time.Now()

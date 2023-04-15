@@ -66,7 +66,7 @@ func (prs *PresencardController) AtualizarPresenca(c *gin.Context) {
 		})
 		return
 	}
-	err = prs.presencaService.UpdatePresenca(uint(presenca.IdAluno), presenca.Tipo)
+	err = prs.presencaService.UpdatePresenca(uint(presenca.IdPresenca), presenca.Tipo)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "não foi atualizar presença " + err.Error(),

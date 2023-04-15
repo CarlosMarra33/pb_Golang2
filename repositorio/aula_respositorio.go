@@ -21,3 +21,15 @@ func (ar *AulaRepository) Create(aula models.Aula) (string, error) {
 	err := ar.db.Create(&aula).Error
 	return "", err
 }
+
+func (ar *AulaRepository) ValidarAula(id uint) bool {
+
+	var aula models.Aula
+
+	err := ar.db.Where(id).First(&aula).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	}
+
+	return true
+}
